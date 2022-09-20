@@ -5,6 +5,7 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	capabilitytypes "github.com/cosmos/cosmos-sdk/x/capability/types"
 
+	"github.com/cosmos/ibc-go/v3/modules/apps/27-interchain-accounts/host/keeper"
 	hosttypes "github.com/cosmos/ibc-go/v3/modules/apps/27-interchain-accounts/host/types"
 	icatypes "github.com/cosmos/ibc-go/v3/modules/apps/27-interchain-accounts/types"
 	channeltypes "github.com/cosmos/ibc-go/v3/modules/core/04-channel/types"
@@ -103,7 +104,7 @@ func (suite *KeeperTestSuite) TestOnChanOpenTry() {
 				addr, found := suite.chainB.GetSimApp().ICAHostKeeper.GetInterchainAccountAddress(suite.chainB.GetContext(), path.EndpointB.ConnectionID, path.EndpointA.ChannelConfig.PortID)
 				suite.Require().True(found)
 
-				acc := suite.chainB.GetSimApp().AccountKeeper.GetAccount(suite.chainB.GetContext(), sdk.MustAccAddressFromBech32(addr))
+				acc := suite.chainB.GetSimApp().AccountKeeper.GetAccount(suite.chainB.GetContext(), keeper.MustAccAddressFromBech32(addr))
 				suite.chainB.GetSimApp().AccountKeeper.RemoveAccount(suite.chainB.GetContext(), acc)
 			}, false,
 		},
@@ -121,7 +122,7 @@ func (suite *KeeperTestSuite) TestOnChanOpenTry() {
 				addr, found := suite.chainB.GetSimApp().ICAHostKeeper.GetInterchainAccountAddress(suite.chainB.GetContext(), path.EndpointB.ConnectionID, path.EndpointA.ChannelConfig.PortID)
 				suite.Require().True(found)
 
-				accAddress := sdk.MustAccAddressFromBech32(addr)
+				accAddress := keeper.MustAccAddressFromBech32(addr)
 				baseAcc := authtypes.NewBaseAccountWithAddress(accAddress)
 				suite.chainB.GetSimApp().AccountKeeper.SetAccount(suite.chainB.GetContext(), baseAcc)
 			}, false,

@@ -78,7 +78,7 @@ func (k Keeper) OnChanOpenTry(
 	interchainAccAddr, found := k.GetInterchainAccountAddress(ctx, metadata.HostConnectionId, counterparty.PortId)
 	if found {
 		// reopening an interchain account
-		accAddress = sdk.MustAccAddressFromBech32(interchainAccAddr)
+		accAddress = MustAccAddressFromBech32(interchainAccAddr)
 		if _, ok := k.accountKeeper.GetAccount(ctx, accAddress).(*icatypes.InterchainAccount); !ok {
 			return "", sdkerrors.Wrapf(icatypes.ErrInvalidAccountReopening, "existing account address %s, does not have interchain account type", accAddress)
 		}
@@ -126,4 +126,14 @@ func (k Keeper) OnChanCloseConfirm(
 	channelID string,
 ) error {
 	return nil
+}
+
+// MustAccAddressFromBech32 calls AccAddressFromBech32 and panics on error.
+func MustAccAddressFromBech32(address string) sdk.AccAddress {
+	addr, err := sdk.AccAddressFromBech32(address)
+	if err != nil {
+		panic(err)
+	}
+
+	return addr
 }
